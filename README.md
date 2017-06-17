@@ -1,2 +1,3 @@
-# nineslider
+# Nineslider
+
 A simple jQuery slider...
