@@ -16,7 +16,8 @@
         var defaults = $.extend({
             autoPlay: {
                 enable: true,
-                interval: 5000
+                interval: 5000,
+                pauseOnHover: false
             },
             navigationTargetSelector: null,
             pagingTargetSelector: null
@@ -54,7 +55,10 @@
             
             initializeItems: function() {
                 
-                $('[data-nineslider-index="'+ currentIndex +'"]').css('z-index', 2);
+                $('[data-nineslider-index="'+ currentIndex +'"]').css({
+                    "z-index": 2,
+                    "display": "block"
+                });
             },
             
             /******************************
@@ -66,7 +70,12 @@
                 itemCount = childSet.length;
                 object.addClass("nbs-nineslider-ul");
                 object.wrap("<div class='nbs-nineslider-container'></div>");
-                object.find("li").addClass("nbs-nineslider-item");
+                object.find("li").addClass("nbs-nineslider-item").css({
+                    "display": "none",
+                    "z-index": 1,
+                    "top": 0,
+                    "left": 0                    
+                });
                 
                 var navHTML = "<div class='nbs-nineslider-nav-left'></div><div class='nbs-nineslider-nav-right'></div>";
 
@@ -81,7 +90,7 @@
                 
                 childSet.each(function(index){
                     $(this).attr('data-nineslider-index', index).css('z-index', 1);
-                    pagingHTML += '<li data-nineslider-index="'+ index +'"></li>'
+                    pagingHTML += '<li data-nineslider-paging-index="'+ index +'"></li>'
                 });
 
                 pagingHTML += "</ul>";
@@ -90,7 +99,7 @@
                     $(pagingHTML).appendTo(settings.pagingTargetSelector);
                 } else {
                     settings.pagingTargetSelector = object.parent();
-                    $(pagingHTML).insertAfter(object.parent());    
+                    $(pagingHTML).insertAfter(object);    
                 }                                  
             },
                     
@@ -100,12 +109,19 @@
             *******************************/
             setEventHandlers: function() {
                 
-                $(settings.pagingTargetSelector).find('.nbs-nineslider-nav-left').on('click', function(){
+                $(settings.navigationTargetSelector).find('.nbs-nineslider-nav-left').on('click', function(){
                     methods.navigate(true);
                 });
 
-                $(settings.pagingTargetSelector).find('.nbs-nineslider-nav-right').on('click', function(){
+                $(settings.navigationTargetSelector).find('.nbs-nineslider-nav-right').on('click', function(){
                     methods.navigate(false);
+                });
+
+                $(settings.pagingTargetSelector).find('.nbs-nineslider-paging').on('click', 'li', function(e){
+                    var slideIndex = parseInt($(e.currentTarget).attr('data-nineslider-paging-index'));
+                    if(currentIndex != slideIndex){
+                        methods.navigateTo(slideIndex);
+                    }                    
                 });
 
                 if(settings.autoPlay.enable) {
@@ -137,43 +153,92 @@
             navigate: function(reverse) {
 
                 if(typeof reverse === 'undefined') { reverse = true }
-
-                if(settings.autoPlay.enable) {
-                    clearInterval(autoPlayInterval);
-                }
-
-                var currentSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
-                currentSlide.css('z-index', 3);
-
-                if(reverse) {
-                    if(currentIndex === 0) { // are we at the beginning?
-                        currentIndex = itemCount - 1;
-                    } else {
-                        currentIndex--;
+                if(canNavigate == true) {
+                    canNavigate = false;
+                    if(settings.autoPlay.enable) {
+                        clearInterval(autoPlayInterval);
                     }
-                } else {
-                    if(currentIndex === itemCount - 1) { // are we at the end?
-                        currentIndex = 0;
-                    } else {
-                        currentIndex++;
-                    }
-                }
 
-                var nextSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
-                nextSlide.css('z-index', 2);
-                currentSlide.fadeOut(function(){
-                    $(this).css({
+                    var currentSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
+
+                    if(reverse) {
+                        if(currentIndex === 0) { // are we at the beginning?
+                            currentIndex = itemCount - 1;
+                        } else {
+                            currentIndex--;
+                        }
+                    } else {
+                        if(currentIndex === itemCount - 1) { // are we at the end?
+                            currentIndex = 0;
+                        } else {
+                            currentIndex++;
+                        }
+                    }
+
+                    var nextSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
+                    nextSlide.css({
                         "display": "block",
+                        "position": "absolute",
                         "z-index": 1
-                    });
-                });
 
-                if(settings.autoPlay.enable) {
-                    methods.setAutoplayInterval();
+                    });
+                    currentSlide.fadeOut(function(){
+                        $(this).css({
+                            "display": "none",
+                            "z-index": 1
+                        });
+
+                        nextSlide.css({
+                            "z-index": 2,
+                            "position": "relative"
+                        });
+
+                        canNavigate = true;
+
+                        if(settings.autoPlay.enable) {
+                            methods.setAutoplayInterval();
+                        }
+
+                    });
                 }
                 
             },
             
+            navigateTo: function(index) {
+                if(canNavigate) {
+                    canNavigate = false;
+
+                    if(settings.autoPlay.enable) {
+                        clearInterval(autoPlayInterval);
+                    }
+
+                    var currentSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
+                    var nextSlide = $('[data-nineslider-index="'+ index +'"]');
+                    currentIndex = index;
+                    nextSlide.css({
+                        "display": "block",
+                        "position": "absolute",
+                        "z-index": 1
+                    });
+                    currentSlide.fadeOut(function(){
+                        $(this).css({
+                            "display": "none",
+                            "z-index": 1
+                        });
+
+                        nextSlide.css({
+                            "z-index": 2,
+                            "position": "relative"
+                        });
+
+                        canNavigate = true;
+                        if(settings.autoPlay.enable) {
+                            methods.setAutoplayInterval();
+                        }                        
+                    });
+                }          
+            },
+
             touchHandler: {
 
                 xDown: null,

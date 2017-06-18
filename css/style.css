@@ -15,6 +15,7 @@ p {
 .nbs-nineslider-container {
     position:relative;
     max-width:100%;
+    text-align: center;
 }
 
 .nbs-nineslider-ul {
@@ -25,8 +26,8 @@ p {
 }
 
 .nbs-nineslider-ul li {
-    position: absolute;
-    display: block;
+    position: relative;
+    display: none; /* initialized via */
 }
 
 .nbs-nineslider-ul li img {
@@ -44,6 +45,7 @@ p {
     position: absolute;
     cursor: pointer;
     top: 50%;
+    transform: translateY(-100%);    
     z-index: 4;
     background: rgba(0,0,0,0.5);
     color: #fff;     
@@ -74,4 +76,15 @@ p {
 .nbs-nineslider-paging {
     position: relative;
     margin: 0 auto;
+    padding: 0;
+    text-align: center
+}
+
+.nbs-nineslider-paging li {
+    margin: 0 5px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #000;
+    cursor: pointer;
 }
