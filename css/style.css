@@ -86,5 +86,10 @@ p {
     width: 10px;
     height: 10px;
     background: #000;
+    border: 1px solid #ccc;
     cursor: pointer;
+}
+
+.nbs-nineslider-paging li.active {
+    background: #fff;
 }
