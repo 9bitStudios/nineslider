@@ -20,7 +20,10 @@
                 pauseOnHover: false
             },
             navigationTargetSelector: null,
-            pagingTargetSelector: null
+            pagingTargetSelector: null,
+            loaded: function() { },
+            before: function() { },
+            after: function() { }
         }, options);
         
         /******************************
@@ -59,7 +62,11 @@
                     "z-index": 2,
                     "display": "block"
                 });
+                
                 $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ currentIndex +'"]').addClass('active');
+                
+                settings.loaded();
+
             },
             
             /******************************
@@ -155,6 +162,9 @@
 
                 if(typeof reverse === 'undefined') { reverse = true }
                 if(canNavigate == true) {
+
+                    settings.before(currentIndex);
+
                     canNavigate = false;
                     if(settings.autoPlay.enable) {
                         clearInterval(autoPlayInterval);
@@ -196,6 +206,8 @@
                             "z-index": 2,
                             "position": "relative"
                         });
+
+                        settings.after(currentIndex);
 
                         canNavigate = true;
 
