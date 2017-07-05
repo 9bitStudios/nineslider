@@ -6,8 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Nineslider - A simple responsive rotator/slider</title>
 <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+<!-- JavaScript -->
+<!--<script type="text/javascript" src="js/nineslider.js"></script>-->
+
+<!-- jQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery.nineslider.js"></script>
+<script type="text/javascript" src="jquery/jquery.nineslider.js"></script>
 
 </head>
 
@@ -39,13 +44,19 @@
 </ul>
 
 <script type="text/javascript">
+
+/*** JavaScript ***/
+// window.addEventListener("load", function(){
+//     nineslider(document.getElementById("demo1"), { });
+// });
+
+/*** jQuery ***/
 $(window).on('load', function() {
 
     $('#demo1').nineslider();
 
 });
+
 </script>
-    
-    
 </body>
 </html>
