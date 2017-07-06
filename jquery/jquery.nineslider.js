@@ -170,7 +170,7 @@
                         clearInterval(autoPlayInterval);
                     }
 
-                    var currentSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
+                    var currentSlide = object.find('[data-nineslider-index="'+ currentIndex +'"]');
 
                     if(reverse) {
                         if(currentIndex === 0) { // are we at the beginning?
@@ -189,7 +189,7 @@
                     $(settings.pagingTargetSelector).find('li').removeClass('active');
                     $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ currentIndex +'"]').addClass('active');
 
-                    var nextSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
+                    var nextSlide = object.find('[data-nineslider-index="'+ currentIndex +'"]');
                     nextSlide.css({
                         "display": "block",
                         "position": "absolute",
@@ -224,6 +224,8 @@
                 if(canNavigate) {
                     canNavigate = false;
 
+                    settings.before(currentIndex);
+
                     if(settings.autoPlay.enable) {
                         clearInterval(autoPlayInterval);
                     }
@@ -231,8 +233,9 @@
                     $(settings.pagingTargetSelector).find('li').removeClass('active');
                     $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ index +'"]').addClass('active');
 
-                    var currentSlide = $('[data-nineslider-index="'+ currentIndex +'"]');
-                    var nextSlide = $('[data-nineslider-index="'+ index +'"]');
+                    var currentSlide = object.find('[data-nineslider-index="'+ currentIndex +'"]');
+                    var nextSlide = object.find('[data-nineslider-index="'+ index +'"]');
+                    
                     currentIndex = index;
                     nextSlide.css({
                         "display": "block",
@@ -251,6 +254,7 @@
                         });
 
                         canNavigate = true;
+                        settings.after(currentIndex);
 
                         if(settings.autoPlay.enable) {
                             methods.setAutoplayInterval();

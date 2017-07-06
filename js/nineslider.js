@@ -152,6 +152,8 @@ var nineslider = window.nineslider = function(element, options){
             if(pagingItem.length > 0) {
                 pagingItem[0].className += "active";
             }
+
+            settings.loaded();
         },
         navigate: function(reverse){
             if(typeof reverse === 'undefined') { reverse = true }
@@ -205,8 +207,10 @@ var nineslider = window.nineslider = function(element, options){
                         nextSlide[0].style.position = "relative";
                         nextSlide[0].style.zIndex = 2;                        
                         
+                        settings.after(currentIndex);
+                        
                         canNavigate = true;
-
+                        
                         if(settings.autoPlay.enable) {
                             methods.setAutoplayInterval();
                         }
@@ -219,6 +223,8 @@ var nineslider = window.nineslider = function(element, options){
         navigateTo: function(index) {
             if(canNavigate) {
                 canNavigate = false;
+
+                settings.before(currentIndex);
 
                 if(settings.autoPlay.enable) {
                     clearInterval(autoPlayInterval);
@@ -252,7 +258,8 @@ var nineslider = window.nineslider = function(element, options){
                         nextSlide[0].style.zIndex = 2;                        
                         
                         canNavigate = true;
-
+                        settings.after(currentIndex);
+                        
                         if(settings.autoPlay.enable) {
                             methods.setAutoplayInterval();
                         }
