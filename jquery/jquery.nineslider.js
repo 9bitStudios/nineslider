@@ -186,36 +186,10 @@
                         }
                     }
 
-                    $(settings.pagingTargetSelector).find('li').removeClass('active');
-                    $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ currentIndex +'"]').addClass('active');
+                    methods.setPaging(currentIndex);
 
                     var nextSlide = object.find('[data-nineslider-index="'+ currentIndex +'"]');
-                    nextSlide.css({
-                        "display": "block",
-                        "position": "absolute",
-                        "z-index": 1
-
-                    });
-                    currentSlide.fadeOut(function(){
-                        $(this).css({
-                            "display": "none",
-                            "z-index": 1
-                        });
-
-                        nextSlide.css({
-                            "z-index": 2,
-                            "position": "relative"
-                        });
-
-                        settings.after(currentIndex);
-
-                        canNavigate = true;
-
-                        if(settings.autoPlay.enable) {
-                            methods.setAutoplayInterval();
-                        }
-
-                    });
+                    methods.transition(currentSlide, nextSlide);
                 }
                 
             },
@@ -230,37 +204,46 @@
                         clearInterval(autoPlayInterval);
                     }
 
-                    $(settings.pagingTargetSelector).find('li').removeClass('active');
-                    $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ index +'"]').addClass('active');
+                    methods.setPaging(index);
 
                     var currentSlide = object.find('[data-nineslider-index="'+ currentIndex +'"]');
                     var nextSlide = object.find('[data-nineslider-index="'+ index +'"]');
-                    
                     currentIndex = index;
-                    nextSlide.css({
-                        "display": "block",
-                        "position": "absolute",
+
+                    methods.transition(currentSlide, nextSlide);
+
+                }          
+            },
+
+            setPaging: function(index){
+                $(settings.pagingTargetSelector).find('li').removeClass('active');
+                $(settings.pagingTargetSelector).find('[data-nineslider-paging-index="'+ index +'"]').addClass('active');
+            },
+
+            transition: function(currentSlide, nextSlide){
+                nextSlide.css({
+                    "display": "block",
+                    "position": "absolute",
+                    "z-index": 1
+                });
+                currentSlide.fadeOut(function(){
+                    $(this).css({
+                        "display": "none",
                         "z-index": 1
                     });
-                    currentSlide.fadeOut(function(){
-                        $(this).css({
-                            "display": "none",
-                            "z-index": 1
-                        });
 
-                        nextSlide.css({
-                            "z-index": 2,
-                            "position": "relative"
-                        });
-
-                        canNavigate = true;
-                        settings.after(currentIndex);
-
-                        if(settings.autoPlay.enable) {
-                            methods.setAutoplayInterval();
-                        }                        
+                    nextSlide.css({
+                        "z-index": 2,
+                        "position": "relative"
                     });
-                }          
+
+                    canNavigate = true;
+                    settings.after(currentIndex);
+
+                    if(settings.autoPlay.enable) {
+                        methods.setAutoplayInterval();
+                    }                        
+                });
             },
 
             touchHandler: {
