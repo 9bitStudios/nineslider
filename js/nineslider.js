@@ -270,10 +270,10 @@ var nineslider = window.nineslider = function(element, options){
                 if (Math.abs( xDiff ) > 0) {
                     if ( xDiff > 0 ) {
                         // swipe left
-                        methods.navigate(false);
+                        methods.navigate(true);
                     } else {
                         //swipe right
-                        methods.navigate(true);
+                        methods.navigate(false);
                     }                       
                 }
                 
