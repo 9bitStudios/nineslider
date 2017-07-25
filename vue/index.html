@@ -15,8 +15,16 @@
 <div id="demo1" class="nbs-nineslider-container">
     <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
         <li v-for="(item, index) in items" class="nbs-nineslider-item" :data-nineslider-index="index">
-            <img :src="item.image" />
-            <div v-html="item.caption" class="caption" v-if="item.caption"></div>            
+            <template v-if="item.link">
+                <a href="item.link">
+                    <img :src="item.image" />
+                    <div v-html="item.caption" class="caption" v-if="item.caption"></div>
+                </a>
+            </template>
+            <template v-else>
+                <img :src="item.image" />
+                <div v-html="item.caption" class="caption" v-if="item.caption"></div>                
+            </template>
         </li>
     </ul>
     <div class="nbs-nineslider-nav-left" @click="navigate(true)"></div>
@@ -34,7 +42,7 @@
 var data = [
     {
         image: "../images/1.jpg",
-        link: "",
+        link: "https://github.com/9bitStudios/nineslider",
         caption: 'This is a caption'
     },
     {
