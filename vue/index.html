@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name = "viewport" content = "user-scalable=no, width=device-width">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Nineslider - A simple responsive rotator/slider</title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://unpkg.com/vue"></script>
+
+</head>
+
+<body>
+
+<div id="demo1" class="nbs-nineslider-container">
+    <ul class="nbs-nineslider-ul"> 
+        <li v-for="(item, index) in items" class="nbs-nineslider-item" :data-nineslider-index="index" style="display: none; z-index: 0; top: 0px; left: 0px;">
+            <img :src="item.image" />
+            <div v-html="item.caption" class="caption" v-if="item.caption"></div>            
+        </li>
+    </ul>
+    <div class="nbs-nineslider-nav-left" @click="navigate(true)"></div>
+    <div class="nbs-nineslider-nav-right" @click="navigate(false)"></div>  
+    <ul class="nbs-nineslider-paging">
+        <li v-for="(item, index) in items" @click="navigateTo(index)" :class="{ active: index == currentIndex }"></li>
+    </ul>
+</div>
+
+<script type="text/javascript" src="vue.nineslider.js"></script>
+<script type="text/javascript">
+
+/*** Vue ***/
+
+var data = [
+    {
+        image: "../images/1.jpg",
+        link: "",
+        caption: 'This is a caption'
+    },
+    {
+        image: "../images/2.jpg",
+        link: "",
+        caption: 'This is another caption with <a href="https://github.com/9bitStudios/nineslider" target="_blank">a link</a>'
+    },
+    {
+        image: "../images/3.jpg",
+        link: "",
+        caption: null
+    },
+    {
+        image: "../images/4.jpg",
+        link: "",
+        caption: null
+    }                            
+];
+
+nineslider("#demo1", {}, data);
+
+</script>
+</body>
+</html>

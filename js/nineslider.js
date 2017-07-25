@@ -141,19 +141,14 @@ var nineslider = window.nineslider = function(element, options){
 
         },
         initializeItems: function(){
+
             var item = object.querySelectorAll('[data-nineslider-index="'+ currentIndex +'"]');
-            if(item.length > 0) {
-                item[0].style.display = "block";
-                item[0].style.zIndex = 2;
-            }
-
+            item[0].style.display = "block";
+            item[0].style.zIndex = 2;
             var pagingItem = object.parentNode.querySelectorAll('[data-nineslider-paging-index="'+ currentIndex +'"]');
-
-            if(pagingItem.length > 0) {
-                pagingItem[0].className += "active";
-            }
-
+            pagingItem[0].className += "active";            
             settings.loaded();
+
         },
         navigate: function(reverse){
             if(typeof reverse === 'undefined') { reverse = true }
@@ -186,7 +181,7 @@ var nineslider = window.nineslider = function(element, options){
 
                 var nextSlide = object.querySelectorAll('[data-nineslider-index="'+ currentIndex +'"]');
 
-                methods.transition(currentSlide, nextSlide);
+                methods.transition(currentSlide[0], nextSlide[0]);
 
             }
         },
@@ -206,45 +201,40 @@ var nineslider = window.nineslider = function(element, options){
                 var nextSlide = object.querySelectorAll('[data-nineslider-index="'+ index +'"]');
                 currentIndex = index;   
                 
-                methods.transition(currentSlide, nextSlide);
+                methods.transition(currentSlide[0], nextSlide[0]);
 
             }
         },
         setPaging: function(index){
             var currentPagingItem = settings.pagingTargetSelector.querySelectorAll(".active");
-            if(currentPagingItem.length > 0) {
-                currentPagingItem[0].classList.remove("active");
-            }
+            currentPagingItem[0].classList.remove("active");            
             var nextPagingItem = settings.pagingTargetSelector.querySelectorAll('[data-nineslider-paging-index="'+ index +'"]');
-            if(nextPagingItem.length > 0) {
-                nextPagingItem[0].className += "active";
-            }  
+            nextPagingItem[0].className += "active";
+            
         },
         transition: function(currentSlide, nextSlide){
-            if(nextSlide.length > 0) {
-                nextSlide[0].style.display = "block";
-                nextSlide[0].style.position = "absolute";
-                nextSlide[0].style.zIndex = 1;
-            }
 
-            if(currentSlide.length > 0) {
-                fadeOut(currentSlide[0], function(){
-                    currentSlide[0].style.display = "none";
-                    currentSlide[0].style.zIndex = 1;
+            nextSlide.style.display = "block";
+            nextSlide.style.position = "absolute";
+            nextSlide.style.zIndex = 1;
+        
+            fadeOut(currentSlide, function(){
+                currentSlide.style.display = "none";
+                currentSlide.style.zIndex = 1;
 
-                    nextSlide[0].style.position = "relative";
-                    nextSlide[0].style.zIndex = 2;                        
-                    
-                    settings.after(currentIndex);
-                    
-                    canNavigate = true;
-                    
-                    if(settings.autoPlay.enable) {
-                        methods.setAutoplayInterval();
-                    }
+                nextSlide.style.position = "relative";
+                nextSlide.style.zIndex = 2;                        
+                
+                settings.after(currentIndex);
+                
+                canNavigate = true;
+                
+                if(settings.autoPlay.enable) {
+                    methods.setAutoplayInterval();
+                }
 
-                });
-            }
+            });
+            
         },
         touchHandler: {
 
@@ -317,7 +307,7 @@ var nineslider = window.nineslider = function(element, options){
                 clearInterval(timer);
                 el.style.display = "none";
                 el.style.opacity = 1;                
-                callback(); //this executes the callback function!
+                callback();
             } else {
                 el.style.opacity = opacity;
                 opacity -=  0.1;
