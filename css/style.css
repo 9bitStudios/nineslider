@@ -25,12 +25,15 @@ p {
     list-style-type:none;      
 }
 
-.nbs-nineslider-ul li {
+.nbs-nineslider-ul > li {
     position: relative;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
     display: none; /* initialized via slider */
 }
 
-.nbs-nineslider-ul li .caption {
+.nbs-nineslider-ul > li .caption {
     position: absolute;
     bottom: 0;
     padding: 5px;
@@ -42,7 +45,7 @@ p {
     text-align: left;
 }
 
-.nbs-nineslider-ul li img {
+.nbs-nineslider-ul > li img {
     max-width: 100%;  
     vertical-align: middle;
 }

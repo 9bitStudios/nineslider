@@ -11,12 +11,34 @@
 
 var nineslider = window.nineslider = function(element, options, data){
 
+    var defaults = {
+        autoPlay: {
+            enable: true,
+            interval: 5000,
+            pauseOnHover: false
+        },
+        loaded: function() { },
+        before: function() { },
+        after: function() { }
+    };
+
+    if(!options) { options = {}; }
+
+    function extend (targetObject, extendingObject){
+        for(var key in extendingObject) {
+            targetObject[key] = extendingObject[key];
+        }
+        return targetObject;
+    } 
+
     new Vue({
         el: element,
         data: {
             items: [],
+            settings: extend(defaults, options),
             currentIndex: 0,
-            canNavigate: true
+            canNavigate: true,
+            autoPlayInterval: null
         },
         created: function(){
             this.items = data;
@@ -24,7 +46,13 @@ var nineslider = window.nineslider = function(element, options, data){
         mounted: function(){
             var item = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
             item[0].style.display = "block";
-            item[0].style.zIndex = 2;                     
+            item[0].style.zIndex = 2; 
+
+            if(this.settings.autoPlay.enable) {
+                this.setAutoplayInterval();
+            }
+
+            this.settings.loaded();                    
         },
         methods: {
             navigate: function(reverse){                
@@ -33,6 +61,11 @@ var nineslider = window.nineslider = function(element, options, data){
                 if(this.canNavigate) {
                     this.canNavigate = false;
 
+                    this.settings.before(this.currentIndex);
+
+                    if(this.settings.autoPlay.enable) {
+                        clearInterval(this.autoPlayInterval);
+                    }
                     var currentSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
                     var itemCount = this.items.length;
 
@@ -59,6 +92,12 @@ var nineslider = window.nineslider = function(element, options, data){
                 if(this.canNavigate) {
 
                     this.canNavigate = false;
+
+                    this.settings.before(this.currentIndex);
+
+                    if(this.settings.autoPlay.enable) {
+                        clearInterval(this.autoPlayInterval);
+                    }                    
                     var currentSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
                     var nextSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ index +'"]');
                     this.currentIndex = index;                    
@@ -78,7 +117,14 @@ var nineslider = window.nineslider = function(element, options, data){
                     nextSlide.style.position = "relative";
                     nextSlide.style.zIndex = 2;                        
 
+                    self.settings.after(self.currentIndex)
+
                     self.canNavigate = true;
+
+                    if(self.settings.autoPlay.enable) {
+                        self.setAutoplayInterval();
+                    }
+
 
                 });
                 
@@ -97,7 +143,23 @@ var nineslider = window.nineslider = function(element, options, data){
                     }
 
                 }, 50);
-            }            
+            },
+            setAutoplayInterval: function(){
+                var self = this;
+                this.autoPlayInterval = setInterval(function() {
+                    self.navigate(false);
+                }, this.settings.autoPlay.interval);                    
+            },
+            mouseOver: function(){
+                if(this.settings.autoPlay.pauseOnHover){
+                    this.canNavigate = false;
+                }
+            },
+            mouseOut: function(){
+                if(this.settings.autoPlay.pauseOnHover){
+                    this.canNavigate = true;
+                }
+            }                     
         }
     });
 }

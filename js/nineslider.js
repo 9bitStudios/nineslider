@@ -49,7 +49,6 @@ var nineslider = window.nineslider = function(element, options){
             childSet.forEach(function(item, index){
                 item.className += "nbs-nineslider-item";
                 item.setAttribute("data-nineslider-index", index);
-                item.setAttribute('style', 'display: none; z-index: 0; top: 0; left: 0;');
             });
 
             // wrap container
@@ -128,13 +127,15 @@ var nineslider = window.nineslider = function(element, options){
 
                 methods.setAutoplayInterval();
 
-                object.addEventListener("mouseover", function(){
-                    canNavigate = false;
-                });
+                if(settings.autoPlay.pauseOnHover){
+                    object.addEventListener("mouseover", function(){
+                        canNavigate = false;
+                    });
 
-                object.addEventListener("mouseout", function(){
-                    canNavigate = true;
-                });
+                    object.addEventListener("mouseout", function(){
+                        canNavigate = true;
+                    });
+                }
             }
             object.addEventListener('touchstart', methods.touchHandler.handleTouchStart, false);        
             object.addEventListener('touchmove', methods.touchHandler.handleTouchMove, false);            
@@ -154,9 +155,10 @@ var nineslider = window.nineslider = function(element, options){
             if(typeof reverse === 'undefined') { reverse = true }
             if(canNavigate) {
 
-                settings.before(currentIndex);
-
                 canNavigate = false;
+
+                settings.before(currentIndex);
+                
                 if(settings.autoPlay.enable) {
                     clearInterval(autoPlayInterval);
                 }

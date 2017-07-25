@@ -13,8 +13,8 @@
 <body>
 
 <div id="demo1" class="nbs-nineslider-container">
-    <ul class="nbs-nineslider-ul"> 
-        <li v-for="(item, index) in items" class="nbs-nineslider-item" :data-nineslider-index="index" style="display: none; z-index: 0; top: 0px; left: 0px;">
+    <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
+        <li v-for="(item, index) in items" class="nbs-nineslider-item" :data-nineslider-index="index">
             <img :src="item.image" />
             <div v-html="item.caption" class="caption" v-if="item.caption"></div>            
         </li>
@@ -54,7 +54,16 @@ var data = [
     }                            
 ];
 
-nineslider("#demo1", {}, data);
+nineslider("#demo1", {
+    autoPlay: {
+        enable: true,
+        interval: 5000,
+        pauseOnHover: true        
+    },
+    loaded: function(){
+        console.log("Vue.js slider loaded...")
+    }
+}, data);
 
 </script>
 </body>

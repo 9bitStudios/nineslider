@@ -78,12 +78,6 @@
                 itemCount = childSet.length;
                 object.addClass("nbs-nineslider-ul");
                 object.wrap("<div class='nbs-nineslider-container'></div>");
-                object.find("li").addClass("nbs-nineslider-item").css({
-                    "display": "none",
-                    "z-index": 1,
-                    "top": 0,
-                    "left": 0                    
-                });
                 
                 var navHTML = "<div class='nbs-nineslider-nav-left'></div><div class='nbs-nineslider-nav-right'></div>";
 
@@ -162,10 +156,11 @@
 
                 if(typeof reverse === 'undefined') { reverse = true }
                 if(canNavigate == true) {
+                    
+                    canNavigate = false;
 
                     settings.before(currentIndex);
 
-                    canNavigate = false;
                     if(settings.autoPlay.enable) {
                         clearInterval(autoPlayInterval);
                     }
