@@ -14,9 +14,9 @@
 
 <div id="demo1" class="nbs-nineslider-container">
     <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
-        <li v-for="(item, index) in items" class="nbs-nineslider-item" :data-nineslider-index="index">
+        <li v-for="(item, index) in items" class="nbs-nineslider-item" :ref="'nbs-nineslider-index-' + index">
             <template v-if="item.link">
-                <a href="item.link">
+                <a :href="item.link">
                     <img :src="item.image" />
                     <div v-html="item.caption" class="caption" v-if="item.caption"></div>
                 </a>

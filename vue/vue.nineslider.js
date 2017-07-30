@@ -44,9 +44,9 @@ var nineslider = window.nineslider = function(element, options, data){
             this.items = data;
         },
         mounted: function(){
-            var item = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
-            item[0].style.display = "block";
-            item[0].style.zIndex = 2; 
+            var item = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
+            item.style.display = "block";
+            item.style.zIndex = 2; 
 
             if(this.settings.autoPlay.enable) {
                 this.setAutoplayInterval();
@@ -66,7 +66,7 @@ var nineslider = window.nineslider = function(element, options, data){
                     if(this.settings.autoPlay.enable) {
                         clearInterval(this.autoPlayInterval);
                     }
-                    var currentSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
+                    var currentSlide = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
                     var itemCount = this.items.length;
 
                     if(reverse) {
@@ -83,9 +83,9 @@ var nineslider = window.nineslider = function(element, options, data){
                         }
                     }
 
-                    var nextSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
+                    var nextSlide = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
 
-                    this.transition(currentSlide[0], nextSlide[0]);
+                    this.transition(currentSlide, nextSlide);
                 }
             },
             navigateTo: function(index) {
@@ -98,10 +98,10 @@ var nineslider = window.nineslider = function(element, options, data){
                     if(this.settings.autoPlay.enable) {
                         clearInterval(this.autoPlayInterval);
                     }                    
-                    var currentSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ this.currentIndex +'"]');
-                    var nextSlide = this.$el.querySelectorAll('[data-nineslider-index="'+ index +'"]');
+                    var currentSlide = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
+                    var nextSlide = this.$refs["nbs-nineslider-index-" + index][0];
                     this.currentIndex = index;                    
-                    this.transition(currentSlide[0], nextSlide[0]);
+                    this.transition(currentSlide, nextSlide);
                 }
             },
             transition: function(currentSlide, nextSlide){
