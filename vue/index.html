@@ -14,6 +14,15 @@
 
 <div id="demo1"></div>
 
+<p>You can set your own external controls by using the "loaded" callback in combination with a <a href="https://vuejs.org/v2/guide/components.html#Non-Parent-Child-Communication" target="_blank">Vue.js event bus</a>. The controls below are a separate mounted Vue.js component but will still allow you to control the slider...</p>
+
+<div id="externalControls">
+    <p>
+        <button @click="left"><<</button>
+        <button @click="right">>></button>
+    </p>
+</div>
+
 <script type="text/javascript" src="vue.nineslider.js"></script>
 <script type="text/javascript">
 
@@ -42,6 +51,8 @@ var data = [
     }                            
 ];
 
+var eventChannel = new Vue();
+
 nineslider("#demo1", {
     autoPlay: {
         enable: true,
@@ -49,9 +60,25 @@ nineslider("#demo1", {
         pauseOnHover: true        
     },
     loaded: function(){
-        console.log("Vue.js slider loaded...")
+        var self = this;
+        eventChannel.$on("myCustomExternalNav", function (isReverse) {
+            self.navigate(isReverse);
+        })        
     }
 }, data);
+
+// Vue.js omponent to control the slider externally
+new Vue({
+    el: "#externalControls",
+    methods:{
+        left: function(){
+            eventChannel.$emit("myCustomExternalNav", true);
+        },
+        right: function(){
+            eventChannel.$emit("myCustomExternalNav", false)
+        }
+    }
+})
 
 </script>
 </body>

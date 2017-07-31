@@ -3,7 +3,7 @@
 * Version: 1.0.0
 * Description: Responsive slider for Vue.js
 * Author: 9bit Studios
-* Copyright 2016, 9bit Studios
+* Copyright 2017, 9bit Studios
 * http://www.9bitstudios.com
 * Free to use and abuse under the MIT license.
 * http://www.opensource.org/licenses/mit-license.php
@@ -33,8 +33,9 @@ var nineslider = window.nineslider = function(element, options, data){
 
     var Nineslider = Vue.extend({
         template: `
-            <div class="nbs-nineslider-container">
-                <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
+        <div class="nbs-nineslider-container">
+            <template v-if="items.length > 0">
+                <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut" v-show="items.length >= 1"> 
                     <li v-for="(item, index) in items" class="nbs-nineslider-item" :ref="'nbs-nineslider-index-' + index">
                         <template v-if="item.link">
                             <a :href="item.link">
@@ -48,12 +49,16 @@ var nineslider = window.nineslider = function(element, options, data){
                         </template>
                     </li>
                 </ul>
-                <div class="nbs-nineslider-nav-left" @click="navigate(true)"></div>
-                <div class="nbs-nineslider-nav-right" @click="navigate(false)"></div>  
-                <ul class="nbs-nineslider-paging">
+                <div class="nbs-nineslider-nav-left" @click="navigate(true)" v-show="items.length > 1"></div>
+                <div class="nbs-nineslider-nav-right" @click="navigate(false)" v-show="items.length > 1"></div>  
+                <ul class="nbs-nineslider-paging" v-show="items.length > 1">
                     <li v-for="(item, index) in items" @click="navigateTo(index)" :class="{ active: index == currentIndex }"></li>
                 </ul>
-            </div>        
+            </template>
+            <template v-else>
+                <p>There are no items to show</p>
+            </template>
+        </div>                   
         `,
         data: function() {
             return {
@@ -65,18 +70,29 @@ var nineslider = window.nineslider = function(element, options, data){
             }
         },
         created: function(){
+
+            var self = this;
+
             this.items = data;
+
+            if(this.items.length <= 1) {
+                this.canNavigate = false;
+            }
+
         },
         mounted: function(){
             var item = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
-            item.style.display = "block";
-            item.style.zIndex = 2; 
+
+            if(item) {
+                item.style.display = "block";
+                item.style.zIndex = 2; 
+            }
             
             if(this.settings.autoPlay.enable) {
                 this.setAutoplayInterval();
             }
 
-            this.settings.loaded();                    
+            this.settings.loaded.call(this);                    
         },
         methods: {
             navigate: function(reverse){                
@@ -117,7 +133,7 @@ var nineslider = window.nineslider = function(element, options, data){
 
                     this.canNavigate = false;
 
-                    this.settings.before(this.currentIndex);
+                    this.settings.before.call(this, this.currentIndex);
 
                     if(this.settings.autoPlay.enable) {
                         clearInterval(this.autoPlayInterval);
@@ -141,7 +157,7 @@ var nineslider = window.nineslider = function(element, options, data){
                     nextSlide.style.position = "relative";
                     nextSlide.style.zIndex = 2;                        
 
-                    self.settings.after(self.currentIndex)
+                    self.settings.after.call(this, self.currentIndex)
 
                     self.canNavigate = true;
 
@@ -175,12 +191,12 @@ var nineslider = window.nineslider = function(element, options, data){
                 }, this.settings.autoPlay.interval);                    
             },
             mouseOver: function(){
-                if(this.settings.autoPlay.pauseOnHover){
+                if(this.settings.autoPlay.pauseOnHover && this.items.length > 1){
                     this.canNavigate = false;
                 }
             },
             mouseOut: function(){
-                if(this.settings.autoPlay.pauseOnHover){
+                if(this.settings.autoPlay.pauseOnHover && this.items.length > 1){
                     this.canNavigate = true;
                 }
             }                     
