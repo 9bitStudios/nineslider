@@ -31,14 +31,38 @@ var nineslider = window.nineslider = function(element, options, data){
         return targetObject;
     } 
 
-    new Vue({
-        el: element,
-        data: {
-            items: [],
-            settings: extend(defaults, options),
-            currentIndex: 0,
-            canNavigate: true,
-            autoPlayInterval: null
+    var Nineslider = Vue.extend({
+        template: `
+            <div class="nbs-nineslider-container">
+                <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
+                    <li v-for="(item, index) in items" class="nbs-nineslider-item" :ref="'nbs-nineslider-index-' + index">
+                        <template v-if="item.link">
+                            <a :href="item.link">
+                                <img :src="item.image" />
+                                <div v-html="item.caption" class="caption" v-if="item.caption"></div>
+                            </a>
+                        </template>
+                        <template v-else>
+                            <img :src="item.image" />
+                            <div v-html="item.caption" class="caption" v-if="item.caption"></div>                
+                        </template>
+                    </li>
+                </ul>
+                <div class="nbs-nineslider-nav-left" @click="navigate(true)"></div>
+                <div class="nbs-nineslider-nav-right" @click="navigate(false)"></div>  
+                <ul class="nbs-nineslider-paging">
+                    <li v-for="(item, index) in items" @click="navigateTo(index)" :class="{ active: index == currentIndex }"></li>
+                </ul>
+            </div>        
+        `,
+        data: function() {
+            return {
+                items: [],
+                settings: extend(defaults, options),
+                currentIndex: 0,
+                canNavigate: true,
+                autoPlayInterval: null
+            }
         },
         created: function(){
             this.items = data;
@@ -47,7 +71,7 @@ var nineslider = window.nineslider = function(element, options, data){
             var item = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
             item.style.display = "block";
             item.style.zIndex = 2; 
-
+            
             if(this.settings.autoPlay.enable) {
                 this.setAutoplayInterval();
             }
@@ -162,4 +186,7 @@ var nineslider = window.nineslider = function(element, options, data){
             }                     
         }
     });
+
+    new Nineslider().$mount(element)
+
 }

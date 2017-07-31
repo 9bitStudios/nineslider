@@ -12,27 +12,7 @@
 
 <body>
 
-<div id="demo1" class="nbs-nineslider-container">
-    <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut"> 
-        <li v-for="(item, index) in items" class="nbs-nineslider-item" :ref="'nbs-nineslider-index-' + index">
-            <template v-if="item.link">
-                <a :href="item.link">
-                    <img :src="item.image" />
-                    <div v-html="item.caption" class="caption" v-if="item.caption"></div>
-                </a>
-            </template>
-            <template v-else>
-                <img :src="item.image" />
-                <div v-html="item.caption" class="caption" v-if="item.caption"></div>                
-            </template>
-        </li>
-    </ul>
-    <div class="nbs-nineslider-nav-left" @click="navigate(true)"></div>
-    <div class="nbs-nineslider-nav-right" @click="navigate(false)"></div>  
-    <ul class="nbs-nineslider-paging">
-        <li v-for="(item, index) in items" @click="navigateTo(index)" :class="{ active: index == currentIndex }"></li>
-    </ul>
-</div>
+<div id="demo1"></div>
 
 <script type="text/javascript" src="vue.nineslider.js"></script>
 <script type="text/javascript">
