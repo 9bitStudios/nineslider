@@ -81,6 +81,9 @@ var nineslider = window.nineslider = function(element, options, data){
 
         },
         mounted: function(){
+
+            var self = this;
+
             var item = this.$refs["nbs-nineslider-index-" + this.currentIndex][0];
 
             if(item) {
@@ -91,6 +94,46 @@ var nineslider = window.nineslider = function(element, options, data){
             if(this.settings.autoPlay.enable) {
                 this.setAutoplayInterval();
             }
+
+            var touchHandler = {
+                xDown: null,
+                yDown: null,
+                handleTouchStart: function(evt) {                                         
+                    this.xDown = evt.touches[0].clientX;                                      
+                    this.yDown = evt.touches[0].clientY;
+                }, 
+                handleTouchMove: function (evt) {
+                    if (!this.xDown || !this.yDown) {
+                        return;
+                    }
+
+                    var xUp = evt.touches[0].clientX;                                    
+                    var yUp = evt.touches[0].clientY;
+
+                    var xDiff = this.xDown - xUp;
+                    var yDiff = this.yDown - yUp;
+                    
+                    // only comparing xDiff
+                    // compare which is greater against yDiff to determine whether left/right or up/down  e.g. if (Math.abs( xDiff ) > Math.abs( yDiff ))
+                    if (Math.abs( xDiff ) > 0) {
+                        if ( xDiff > 0 ) {
+                            // swipe left
+                            self.navigate(true);
+                        } else {
+                            //swipe right
+                            self.navigate(false);
+                        }                       
+                    }
+                    
+                    /* reset values */
+                    this.xDown = null;
+                    this.yDown = null;
+                    canNavigate = true;   
+                }             
+            };
+
+            this.$el.addEventListener('touchstart', touchHandler.handleTouchStart, false);   
+            this.$el.addEventListener('touchmove', touchHandler.handleTouchMove, false);  
 
             this.settings.loaded.call(this);                    
         },
