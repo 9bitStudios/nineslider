@@ -31,6 +31,7 @@ p {
     top: 0px;
     left: 0px;
     display: none; /* initialized via slider */
+    width: 100%;
 }
 
 .nbs-nineslider-ul > li .caption {
@@ -47,6 +48,7 @@ p {
 
 .nbs-nineslider-ul > li img {
     max-width: 100%;  
+    width: 100%;
     vertical-align: middle;
 }
 
