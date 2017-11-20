@@ -10,10 +10,17 @@ export class PagingItem extends React.Component {
 
     pagingClick(e) {
         this.setState((currentState, props) => {
-            currentState.isActive = true;
             props.update(this.props.index);
+            currentState.isActive = true;            
             return currentState;
         });
+    }
+
+    setStateExternal(active) {
+        this.setState((currentState, props) => {
+            currentState.isActive = active;            
+            return currentState;
+        });        
     }
 
     render(){

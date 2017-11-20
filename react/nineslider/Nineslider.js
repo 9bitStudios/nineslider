@@ -23,36 +23,42 @@ export class Nineslider extends React.Component {
     }
 
     componentDidMount(){
-        ReactDOM.findDOMNode(this.refs.name)
 
+        this.setTimer();
+
+    }
+
+    setTimer() {
         this.timer = setInterval(() => {
             this.navigate(false);
-        }, 5000);
+        }, 5000);        
+    }
 
+    clearTimer() {
+        clearInterval(this.timer);        
     }
 
     pagingItemEvent(index){
 
-        clearInterval(this.timer);
-        this.timer = setInterval(() => {
-            this.navigate(false);
-        }, 5000);
+        this.clearTimer();
 
+        this.refs["paging" + this.state.currentIndex].setStateExternal(false);
         this.refs["slide" + index].setAsNextSlide();
-        this.refs["slide" + this.state.currentIndex].fadeOut().then(()=>{
+        this.refs["slide" + this.state.currentIndex].transition().then(()=>{
             this.setState((currentState, props) => {
                 currentState.currentIndex = index;
                 return currentState;
             });
+
+            this.setTimer()
+
         });
     }
 
     navigationItemEvent(reverse) {
-        clearInterval(this.timer);
-        this.navigate(reverse)
-        this.timer = setInterval(() => {
-            this.navigate(false);
-        }, 5000);   
+        this.clearTimer();
+        this.navigate(reverse);
+        this.setTimer();
     }
 
     navigate(reverse){
@@ -76,13 +82,13 @@ export class Nineslider extends React.Component {
         }
 
         this.refs["slide" + currentIndex].setAsNextSlide();
-        this.refs["slide" + oldIndex].fadeOut().then(()=>{
+        this.refs["slide" + oldIndex].transition().then(()=>{
 
             this.setState((currentState, props) => {
                 currentState.currentIndex = currentIndex;
                 return currentState;
             });
-    
+
         });
 
     }
@@ -94,7 +100,7 @@ export class Nineslider extends React.Component {
         });
         
         var paging = this.props.data.map((item, index) => {
-            return (<PagingItem key={this.generateGuid()} index={index} isActive={this.state.currentIndex === index} update={(index) => this.pagingItemEvent(index)} />);        
+            return (<PagingItem key={this.generateGuid()} index={index} ref={"paging" + index} isActive={this.state.currentIndex === index} update={(index) => this.pagingItemEvent(index)} />);        
         });
 
         return(

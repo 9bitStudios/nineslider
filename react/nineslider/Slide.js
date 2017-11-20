@@ -32,10 +32,16 @@ export class Slide extends React.Component {
         }
     }
 
-    fadeOut() {
+    transition() {
         var node = ReactDOM.findDOMNode(this);        
-        return new Promise(function(resolve, reject){
-            $(node).fadeOut(function(){
+        return new Promise((resolve, reject) => {
+            $(node).fadeOut(() => {
+
+                this.setState((currentState, props) => {
+                    currentState.style = this.activeSlideStyle;
+                    return currentState;
+                });
+
                 resolve();
             });
         });

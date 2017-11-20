@@ -644,47 +644,52 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this2 = this;
 
-            ReactDOM.findDOMNode(this.refs.name);
+            this.setTimer();
+        }
+    }, {
+        key: 'setTimer',
+        value: function setTimer() {
+            var _this2 = this;
 
             this.timer = setInterval(function () {
                 _this2.navigate(false);
             }, 5000);
         }
     }, {
+        key: 'clearTimer',
+        value: function clearTimer() {
+            clearInterval(this.timer);
+        }
+    }, {
         key: 'pagingItemEvent',
         value: function pagingItemEvent(index) {
             var _this3 = this;
 
-            clearInterval(this.timer);
-            this.timer = setInterval(function () {
-                _this3.navigate(false);
-            }, 5000);
+            this.clearTimer();
 
+            this.refs["paging" + this.state.currentIndex].setStateExternal(false);
             this.refs["slide" + index].setAsNextSlide();
-            this.refs["slide" + this.state.currentIndex].fadeOut().then(function () {
+            this.refs["slide" + this.state.currentIndex].transition().then(function () {
                 _this3.setState(function (currentState, props) {
                     currentState.currentIndex = index;
                     return currentState;
                 });
+
+                _this3.setTimer();
             });
         }
     }, {
         key: 'navigationItemEvent',
         value: function navigationItemEvent(reverse) {
-            var _this4 = this;
-
-            clearInterval(this.timer);
+            this.clearTimer();
             this.navigate(reverse);
-            this.timer = setInterval(function () {
-                _this4.navigate(false);
-            }, 5000);
+            this.setTimer();
         }
     }, {
         key: 'navigate',
         value: function navigate(reverse) {
-            var _this5 = this;
+            var _this4 = this;
 
             var currentIndex = this.state.currentIndex;
             var oldIndex = this.state.currentIndex;
@@ -707,9 +712,9 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
             }
 
             this.refs["slide" + currentIndex].setAsNextSlide();
-            this.refs["slide" + oldIndex].fadeOut().then(function () {
+            this.refs["slide" + oldIndex].transition().then(function () {
 
-                _this5.setState(function (currentState, props) {
+                _this4.setState(function (currentState, props) {
                     currentState.currentIndex = currentIndex;
                     return currentState;
                 });
@@ -718,15 +723,15 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this6 = this;
+            var _this5 = this;
 
             var slides = this.props.data.map(function (item, index) {
-                return React.createElement(_Slide.Slide, { key: _this6.generateGuid(), index: index, ref: "slide" + index, isCurrentSlide: _this6.state.currentIndex === index, image: item.image, link: item.link });
+                return React.createElement(_Slide.Slide, { key: _this5.generateGuid(), index: index, ref: "slide" + index, isCurrentSlide: _this5.state.currentIndex === index, image: item.image, link: item.link });
             });
 
             var paging = this.props.data.map(function (item, index) {
-                return React.createElement(_PagingItem.PagingItem, { key: _this6.generateGuid(), index: index, isActive: _this6.state.currentIndex === index, update: function update(index) {
-                        return _this6.pagingItemEvent(index);
+                return React.createElement(_PagingItem.PagingItem, { key: _this5.generateGuid(), index: index, ref: "paging" + index, isActive: _this5.state.currentIndex === index, update: function update(index) {
+                        return _this5.pagingItemEvent(index);
                     } });
             });
 
@@ -739,10 +744,10 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
                     slides
                 ),
                 React.createElement(_NavigationItem.NavigationItem, { direction: "left", update: function update(isReversed) {
-                        return _this6.navigationItemEvent(isReversed);
+                        return _this5.navigationItemEvent(isReversed);
                     } }),
                 React.createElement(_NavigationItem.NavigationItem, { direction: "right", update: function update(isReversed) {
-                        return _this6.navigationItemEvent(isReversed);
+                        return _this5.navigationItemEvent(isReversed);
                     } }),
                 React.createElement(
                     'ul',
@@ -2642,11 +2647,19 @@ var Slide = exports.Slide = function (_React$Component) {
     }
 
     _createClass(Slide, [{
-        key: 'fadeOut',
-        value: function fadeOut() {
+        key: 'transition',
+        value: function transition() {
+            var _this2 = this;
+
             var node = ReactDOM.findDOMNode(this);
             return new Promise(function (resolve, reject) {
                 (0, _jquery2.default)(node).fadeOut(function () {
+
+                    _this2.setState(function (currentState, props) {
+                        currentState.style = _this2.activeSlideStyle;
+                        return currentState;
+                    });
+
                     resolve();
                 });
             });
@@ -2654,10 +2667,10 @@ var Slide = exports.Slide = function (_React$Component) {
     }, {
         key: 'setAsNextSlide',
         value: function setAsNextSlide() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.setState(function (currentState, props) {
-                currentState.style = _this2.nextSlideStyle;
+                currentState.style = _this3.nextSlideStyle;
                 return currentState;
             });
         }
@@ -12818,8 +12831,16 @@ var PagingItem = exports.PagingItem = function (_React$Component) {
             var _this2 = this;
 
             this.setState(function (currentState, props) {
-                currentState.isActive = true;
                 props.update(_this2.props.index);
+                currentState.isActive = true;
+                return currentState;
+            });
+        }
+    }, {
+        key: "setStateExternal",
+        value: function setStateExternal(active) {
+            this.setState(function (currentState, props) {
+                currentState.isActive = active;
                 return currentState;
             });
         }
