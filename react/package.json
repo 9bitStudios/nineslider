@@ -4,8 +4,8 @@
     "description": "A slider built in React...",
     "license": "MIT",
     "repository": {
-        "type": "",
-        "url": ""
+        "type": "git",
+        "url": "https://github.com/9bitStudios/nineslider"
     },
     "homepage": "http://www.9bitstudios.com",
     "scripts": {
