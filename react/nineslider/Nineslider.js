@@ -1,20 +1,28 @@
+import settings from './Settings';
 import {react} from 'react';
 import {Slide} from './Slide';
 import {NavigationItem} from './NavigationItem';
 import {PagingItem} from './PagingItem';
 
+
 export class Nineslider extends React.Component {
-    
+
     constructor(){
         super(...arguments);
-        
+        this.settings = this.extend(settings, this.props.settings)
         this.timer = null;
-
         this.state = {
             currentIndex: 0
         }
     }
     
+    extend(targetObject, extendingObject){
+        for(var key in extendingObject) {
+            targetObject[key] = extendingObject[key];
+        }
+        return targetObject;
+    }
+
     generateGuid() {
         function s4() {
           return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -22,16 +30,17 @@ export class Nineslider extends React.Component {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    componentDidMount(){
-
+    componentDidMount(){       
         this.setTimer();
-
+        this.settings.loaded.call(this);
     }
 
     setTimer() {
-        this.timer = setInterval(() => {
-            this.navigate(false);
-        }, 5000);        
+        if(this.settings.autoPlay.enable) {
+            this.timer = setInterval(() => {
+                this.navigate(false);
+            }, this.settings.autoPlay.interval);        
+        }
     }
 
     clearTimer() {
@@ -41,7 +50,7 @@ export class Nineslider extends React.Component {
     pagingItemEvent(index){
 
         this.clearTimer();
-
+        this.settings.before.call(this);
         this.refs["paging" + this.state.currentIndex].setStateExternal(false);
         this.refs["slide" + index].setAsNextSlide();
         this.refs["slide" + this.state.currentIndex].transition().then(()=>{
@@ -51,7 +60,7 @@ export class Nineslider extends React.Component {
             });
 
             this.setTimer()
-
+            this.settings.after.call(this);
         });
     }
 
@@ -63,6 +72,7 @@ export class Nineslider extends React.Component {
 
     navigate(reverse){
         
+        this.settings.before.call(this);
         var currentIndex = this.state.currentIndex;
         var oldIndex = this.state.currentIndex;
         var itemCount = this.props.data.length;
@@ -89,6 +99,8 @@ export class Nineslider extends React.Component {
                 return currentState;
             });
 
+            this.settings.after.call(this);
+            
         });
 
     }
@@ -108,8 +120,8 @@ export class Nineslider extends React.Component {
                 <ul class="nbs-nineslider-ul">
                     {slides}
                 </ul>                
-                <NavigationItem direction={"left"} update={(isReversed) => this.navigationItemEvent(isReversed)} />
-                <NavigationItem direction={"right"} update={(isReversed) => this.navigationItemEvent(isReversed)} />
+                <NavigationItem direction={"left"} update={() => this.navigationItemEvent(true)} />
+                <NavigationItem direction={"right"} update={() => this.navigationItemEvent(false)} />
                 <ul class="nbs-nineslider-paging">
                     {paging}
                 </ul>

@@ -261,9 +261,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(9);
-} else {
   module.exports = __webpack_require__(10);
+} else {
+  module.exports = __webpack_require__(11);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -587,7 +587,24 @@ var data = [{
     caption: null
 }];
 
-ReactDOM.render(React.createElement(_Nineslider.Nineslider, { data: data }), document.getElementById('content'));
+var settings = {
+    autoPlay: {
+        enable: true,
+        interval: 5000,
+        pauseOnHover: false
+    },
+    loaded: function loaded() {
+        console.log('loaded');
+    },
+    before: function before() {
+        console.log('before');
+    },
+    after: function after() {
+        console.log('after');
+    }
+};
+
+ReactDOM.render(React.createElement(_Nineslider.Nineslider, { data: data, settings: settings }), document.getElementById('content'));
 
 /***/ }),
 /* 8 */
@@ -603,13 +620,19 @@ exports.Nineslider = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Settings = __webpack_require__(9);
+
+var _Settings2 = _interopRequireDefault(_Settings);
+
 var _react = __webpack_require__(1);
 
-var _Slide = __webpack_require__(13);
+var _Slide = __webpack_require__(14);
 
-var _NavigationItem = __webpack_require__(15);
+var _NavigationItem = __webpack_require__(16);
 
-var _PagingItem = __webpack_require__(16);
+var _PagingItem = __webpack_require__(17);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -625,8 +648,8 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Nineslider.__proto__ || Object.getPrototypeOf(Nineslider)).apply(this, arguments));
 
+        _this.settings = _this.extend(_Settings2.default, _this.props.settings);
         _this.timer = null;
-
         _this.state = {
             currentIndex: 0
         };
@@ -634,6 +657,14 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
     }
 
     _createClass(Nineslider, [{
+        key: 'extend',
+        value: function extend(targetObject, extendingObject) {
+            for (var key in extendingObject) {
+                targetObject[key] = extendingObject[key];
+            }
+            return targetObject;
+        }
+    }, {
         key: 'generateGuid',
         value: function generateGuid() {
             function s4() {
@@ -644,17 +675,19 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-
             this.setTimer();
+            this.settings.loaded.call(this);
         }
     }, {
         key: 'setTimer',
         value: function setTimer() {
             var _this2 = this;
 
-            this.timer = setInterval(function () {
-                _this2.navigate(false);
-            }, 5000);
+            if (this.settings.autoPlay.enable) {
+                this.timer = setInterval(function () {
+                    _this2.navigate(false);
+                }, this.settings.autoPlay.interval);
+            }
         }
     }, {
         key: 'clearTimer',
@@ -667,7 +700,7 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
             var _this3 = this;
 
             this.clearTimer();
-
+            this.settings.before.call(this);
             this.refs["paging" + this.state.currentIndex].setStateExternal(false);
             this.refs["slide" + index].setAsNextSlide();
             this.refs["slide" + this.state.currentIndex].transition().then(function () {
@@ -677,6 +710,7 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
                 });
 
                 _this3.setTimer();
+                _this3.settings.after.call(_this3);
             });
         }
     }, {
@@ -691,6 +725,7 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
         value: function navigate(reverse) {
             var _this4 = this;
 
+            this.settings.before.call(this);
             var currentIndex = this.state.currentIndex;
             var oldIndex = this.state.currentIndex;
             var itemCount = this.props.data.length;
@@ -718,6 +753,8 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
                     currentState.currentIndex = currentIndex;
                     return currentState;
                 });
+
+                _this4.settings.after.call(_this4);
             });
         }
     }, {
@@ -743,11 +780,11 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
                     { 'class': 'nbs-nineslider-ul' },
                     slides
                 ),
-                React.createElement(_NavigationItem.NavigationItem, { direction: "left", update: function update(isReversed) {
-                        return _this5.navigationItemEvent(isReversed);
+                React.createElement(_NavigationItem.NavigationItem, { direction: "left", update: function update() {
+                        return _this5.navigationItemEvent(true);
                     } }),
-                React.createElement(_NavigationItem.NavigationItem, { direction: "right", update: function update(isReversed) {
-                        return _this5.navigationItemEvent(isReversed);
+                React.createElement(_NavigationItem.NavigationItem, { direction: "right", update: function update() {
+                        return _this5.navigationItemEvent(false);
                     } }),
                 React.createElement(
                     'ul',
@@ -763,6 +800,27 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    autoPlay: {
+        enable: true,
+        interval: 5000,
+        pauseOnHover: false
+    },
+    loaded: function loaded() {},
+    before: function before() {},
+    after: function after() {}
+};
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -792,7 +850,7 @@ module.exports={Children:{map:S.map,forEach:S.forEach,count:S.count,toArray:S.to
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -817,7 +875,7 @@ var require$$0 = __webpack_require__(6);
 var emptyObject = __webpack_require__(5);
 var invariant = __webpack_require__(2);
 var emptyFunction = __webpack_require__(3);
-var checkPropTypes = __webpack_require__(11);
+var checkPropTypes = __webpack_require__(12);
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -2498,7 +2556,7 @@ module.exports = ReactEntry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2514,7 +2572,7 @@ module.exports = ReactEntry;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(2);
   var warning = __webpack_require__(6);
-  var ReactPropTypesSecret = __webpack_require__(12);
+  var ReactPropTypesSecret = __webpack_require__(13);
   var loggedTypeFailures = {};
 }
 
@@ -2565,7 +2623,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2584,7 +2642,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2599,7 +2657,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(1);
 
-var _jquery = __webpack_require__(14);
+var _jquery = __webpack_require__(15);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -2690,7 +2748,7 @@ var Slide = exports.Slide = function (_React$Component) {
 }(React.Component);
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12734,7 +12792,7 @@ return jQuery;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12790,7 +12848,7 @@ var NavigationItem = exports.NavigationItem = function (_React$Component) {
 }(React.Component);
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
