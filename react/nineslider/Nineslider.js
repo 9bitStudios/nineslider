@@ -108,7 +108,7 @@ export class Nineslider extends React.Component {
     render(){
 
         var slides = this.props.data.map((item, index) => {
-            return (<Slide key={this.generateGuid()} index={index} ref={"slide" + index} isCurrentSlide={this.state.currentIndex === index} image={item.image} link={item.link} />);        
+            return (<Slide key={this.generateGuid()} index={index} ref={"slide" + index} isCurrentSlide={this.state.currentIndex === index} image={item.image} link={item.link} caption={item.caption} />);        
         });
         
         var paging = this.props.data.map((item, index) => {

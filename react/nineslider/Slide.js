@@ -56,10 +56,10 @@ export class Slide extends React.Component {
 
     render() {
         
+        var caption = (this.props.caption) ? `<div class="caption">${this.props.caption}</div>` : ""; 
+
         return(
-            <li class="nbs-nineslider-item" style={this.state.style}>
-                <img src={this.state.src} />
-            </li>
+            <li class="nbs-nineslider-item" style={this.state.style} dangerouslySetInnerHTML={{ __html: `<img src="${this.props.image}" />${caption}` }}></li>
         )  
     }
 

@@ -763,7 +763,7 @@ var Nineslider = exports.Nineslider = function (_React$Component) {
             var _this5 = this;
 
             var slides = this.props.data.map(function (item, index) {
-                return React.createElement(_Slide.Slide, { key: _this5.generateGuid(), index: index, ref: "slide" + index, isCurrentSlide: _this5.state.currentIndex === index, image: item.image, link: item.link });
+                return React.createElement(_Slide.Slide, { key: _this5.generateGuid(), index: index, ref: "slide" + index, isCurrentSlide: _this5.state.currentIndex === index, image: item.image, link: item.link, caption: item.caption });
             });
 
             var paging = this.props.data.map(function (item, index) {
@@ -2736,11 +2736,9 @@ var Slide = exports.Slide = function (_React$Component) {
         key: 'render',
         value: function render() {
 
-            return React.createElement(
-                'li',
-                { 'class': 'nbs-nineslider-item', style: this.state.style },
-                React.createElement('img', { src: this.state.src })
-            );
+            var caption = this.props.caption ? '<div class="caption">' + this.props.caption + '</div>' : "";
+
+            return React.createElement('li', { 'class': 'nbs-nineslider-item', style: this.state.style, dangerouslySetInnerHTML: { __html: '<img src="' + this.props.image + '" />' + caption } });
         }
     }]);
 
