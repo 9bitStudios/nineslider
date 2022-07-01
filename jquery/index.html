@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name = "viewport" content = "user-scalable=no, width=device-width">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Nineslider - A simple responsive rotator/slider</title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.nineslider.js"></script>
+
+</head>
+
+<body>
+
+<ul id="demo1"> 
+    <li>
+        <a href="https://github.com/9bitStudios/nineslider">
+            <img src="../images/1.jpg" />
+            <div class="caption">
+                This is a caption.
+            </div>
+        </a>
+    </li>
+    <li>
+        <img src="../images/2.jpg" />
+        <div class="caption">
+            This is another caption with <a href="https://github.com/9bitStudios/nineslider" target="_blank">a link</a>
+        </div>
+    </li>
+    <li>
+        <img src="../images/3.jpg" />
+    </li>
+    <li>
+        <img src="../images/4.jpg" />
+    </li>                                                       
+</ul>
+
+<script type="text/javascript">
+
+    $(window).on('load', function() {
+
+        $('#demo1').nineslider();
+
+    });
+
+</script>
+</body>
+</html>

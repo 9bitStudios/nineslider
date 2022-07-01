@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name = "viewport" content = "user-scalable=no, width=device-width">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Nineslider - A simple responsive rotator/slider</title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.0/vue.min.js"></script>
+
+</head>
+
+<body>
+
+<div id="demo1"></div>
+
+<p>You can set your own external controls by using the "loaded" callback in combination with a <a href="https://vuejs.org/v2/guide/components.html#Non-Parent-Child-Communication" target="_blank">Vue.js event bus</a>. The controls below are a separate mounted Vue.js component but will still allow you to control the slider...</p>
+
+<div id="externalControls">
+    <p>
+        <button @click="left"><<</button>
+        <button @click="right">>></button>
+    </p>
+</div>
+
+<script type="text/javascript" src="vue.nineslider.js"></script>
+<script type="text/javascript">
+
+/*** Vue ***/
+
+var data = [
+    {
+        image: "../images/1.jpg",
+        link: "https://github.com/9bitStudios/nineslider",
+        caption: 'This is a caption'
+    },
+    {
+        image: "../images/2.jpg",
+        link: "",
+        caption: 'This is another caption with <a href="https://github.com/9bitStudios/nineslider" target="_blank">a link</a>'
+    },
+    {
+        image: "../images/3.jpg",
+        link: "",
+        caption: null
+    },
+    {
+        image: "../images/4.jpg",
+        link: "",
+        caption: null
+    }                            
+];
+
+var eventChannel = new Vue();
+
+nineslider("#demo1", {
+    autoPlay: {
+        enable: true,
+        interval: 5000,
+        pauseOnHover: true        
+    },
+    loaded: function(){
+        var self = this;
+        eventChannel.$on("myCustomExternalNav", function (isReverse) {
+            self.navigate(isReverse);
+        })        
+    }
+}, data);
+
+// Vue.js omponent to control the slider externally
+new Vue({
+    el: "#externalControls",
+    methods:{
+        left: function(){
+            eventChannel.$emit("myCustomExternalNav", true);
+        },
+        right: function(){
+            eventChannel.$emit("myCustomExternalNav", false)
+        }
+    }
+})
+
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+    "name": "nineslider-react",
+    "version": "0.0.1",
+    "description": "A slider built in React...",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/9bitStudios/nineslider"
+    },
+    "homepage": "http://www.9bitstudios.com",
+    "scripts": {
+        "start": "webpack-dev-server --progress"
+    },    
+    "dependencies": {
+        "react": "16.0.0",
+        "jquery": "3.0.0"
+    },
+    "devDependencies": {
+        "webpack": "3.6.0",
+        "webpack-dev-server": "2.8.2",
+        "babel-core": "6.13.0",
+        "babel-loader": "7.1.2",
+        "babel-preset-es2015": "6.13.0",
+        "babel-preset-react": "6.24.1"
+    }
+}
