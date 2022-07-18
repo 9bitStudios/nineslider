@@ -9,7 +9,7 @@
 * http://www.opensource.org/licenses/mit-license.php
 */
 
-var nineslider = window.nineslider = function(element, options, data){
+var nineslider = window.nineslider = function(element, options, data, template){
 
     var defaults = {
         autoPlay: {
@@ -32,34 +32,7 @@ var nineslider = window.nineslider = function(element, options, data){
     } 
 
     var Nineslider = Vue.extend({
-        template: `
-        <div class="nbs-nineslider-container">
-            <template v-if="items.length > 0">
-                <ul class="nbs-nineslider-ul" @mouseover="mouseOver" @mouseout="mouseOut" v-show="items.length >= 1"> 
-                    <li v-for="(item, index) in items" class="nbs-nineslider-item" :ref="'nbs-nineslider-index-' + index">
-                        <template v-if="item.link">
-                            <a :href="item.link">
-                                <img :src="item.image" />
-                                <div v-html="item.caption" class="caption" v-if="item.caption"></div>
-                            </a>
-                        </template>
-                        <template v-else>
-                            <img :src="item.image" />
-                            <div v-html="item.caption" class="caption" v-if="item.caption"></div>                
-                        </template>
-                    </li>
-                </ul>
-                <div class="nbs-nineslider-nav-left" @click="navigate(true)" v-show="items.length > 1"></div>
-                <div class="nbs-nineslider-nav-right" @click="navigate(false)" v-show="items.length > 1"></div>  
-                <ul class="nbs-nineslider-paging" v-show="items.length > 1">
-                    <li v-for="(item, index) in items" @click="navigateTo(index)" :class="{ active: index == currentIndex }"></li>
-                </ul>
-            </template>
-            <template v-else>
-                <p>There are no items to show</p>
-            </template>
-        </div>                   
-        `,
+        template: template,
         data: function() {
             return {
                 items: [],
