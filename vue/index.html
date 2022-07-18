@@ -79,7 +79,8 @@ var template = `
             <p>There are no items to show</p>
         </template>
     </div>                   
-    `;
+`;
+
 nineslider("#demo1", {
     autoPlay: {
         enable: true,
@@ -92,7 +93,8 @@ nineslider("#demo1", {
             self.navigate(isReverse);
         })        
     }
-}, data, template), 
+}, data, template);
+
 // Vue.js omponent to control the slider externally
 new Vue({
     el: "#externalControls",
